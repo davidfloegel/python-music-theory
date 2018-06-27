@@ -1,0 +1,24 @@
+version: 2
+jobs:
+    build:
+      docker:
+        - image: continuumio/miniconda3
+      steps:
+        - checkout
+        - run:
+            name: Initialisation
+            command: |
+              apt update -y
+              apt upgrade -y
+              apt install make
+              make init
+        - run:
+            name: Performing lint checks
+            command: |
+              source activate musolingo
+              make lint
+        - run:
+            name: Performing tests
+            command: |
+              source activate musolingo
+              make test
