@@ -14,35 +14,82 @@
 
 This library was written to power a music theory / ear training app I'm currently developing with [@cle-ment](https://www.github.com/cle-ment).
 
-## Install
+## Installation
 
 > @TODO  
 > This library will soon be available for installation via `pip` or similar commands.
 
-## Usage
+## API Overview
+
+We're trying to make this libraries API as software agnostic as possible so that it can easily be translated into different languages.
 
 ### Notes
 
+#### Instantiating a new Note
+Instantiating a new note is as easy as calling the `Note` constructor and passing in your note name. The note constructor will look for the actual name, any accidentals and the octave which will default to the default octave 4.
+
 ```python
-note1 = Note('C')
-note2 = Note('Eb')
-note3 = Note('A#')
-note4 = Note('Gbb')
-note5 = Note('Ax)
+# a simple note
+simple_note = Note('C')
 
-note6 = Note('C5')
-note7 = Note('Abbb3')
+# a note with accidentals
+note_with_accidental_1 = Note('Eb')
+note_with_accidental_2 = Note('Ab')
+note_with_accidental_2 = Note('F#')
 
-# easy notation (enharmonic equivalent)
-note7.easy_notation.name = 'Gb3'
+# a note in a specific octave
+note_in_octave = Note('G3')
 
-# is note enharmonic equivalent?
-Note('C#') == Note('Db') => true
-
-# is note the exact same?
-Note('C#').is_same(Note('Db')) => false
-Note('C#').is_same(Note('C#')) => true
+# a note with accidentals and an octave
+complex_note = Note('Abb5')
 ```
+
+#### Attributes
+You have access to a few different attributes once a note has been created. Let's take it from the example of the note `Abb5`
+
+##### note.letter
+The letter is the actual note name without any modifiers. In this case `A`
+
+##### note.accidentals
+The accidentals will hand you an instance of the `Accidentals` class which contains all the accidentals attributes and few helpers.
+
+##### note.octave
+Returns the octave of the note as int. In this case `5`
+
+##### note.midi_value
+Returns the calculated midi value for this note. In this case `79`
+
+##### note.easy_notation
+The `easy_notation` attribute simplifies the way the note is written if it has multiple accidentals. The note `Abb` is technically speaking a `G` so the `easy_notation` property will return `G5`
+
+#### Operators
+
+##### ==
+The `==` operator checks if note B is of the same (midi) value or the enharmonic equivalent of note A.  Have a look at this test excerpt.
+
+```python
+note_a = Note('C#')
+note_b = Note('Db')
+note_c = Note('D')
+
+assert note_a == note_b # true
+assert note_a == note_c # false
+```
+
+##### note.is_same
+The `is_same` method checks note equality based on name *and* midi value. In other words, it has to be the exact same note. The enharmonic equivalent would not pass.
+
+```python
+note_a = Note('C#')
+note_b = Note('Db')
+note_c = Note('C#')
+
+assert note_a.is_same(note_b) # false
+assert note_a.is_same(note_c) # true
+```
+
+--------
+
 
 ### Intervals
 
